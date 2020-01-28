@@ -1,0 +1,4 @@
+/home/pi/socket_comm_rem_1/build/CMakeFiles/rebuild_cache.dir
+/home/pi/socket_comm_rem_1/build/CMakeFiles/edit_cache.dir
+/home/pi/socket_comm_rem_1/build/CMakeFiles/server.dir
+/home/pi/socket_comm_rem_1/build/CMakeFiles/client.dir

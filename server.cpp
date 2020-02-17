@@ -51,13 +51,14 @@ int main(int argc, char *argv[])
           error("ERROR on accept");
      
      printf("server: got connection from %s port %d\n", inet_ntoa(cli_addr.sin_addr), ntohs(cli_addr.sin_port));
-
+     while(true) {
      bzero(buffer,256);
      n = read(newsockfd,buffer,255);
      if (n < 0) error("ERROR reading from socket");
      printf("Here is the message: %s\n",buffer);
      n = write(newsockfd,"I got your message",18);
      if (n < 0) error("ERROR writing to socket");
+     }
      close(newsockfd);
      close(sockfd);
      return 0; 

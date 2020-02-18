@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
          exit(1);
      }
      sockfd = socket(AF_INET, SOCK_STREAM, 0);
-     if (sockfd < 0) 
+     if (sockfd < 0)
         error("ERROR opening socket");
      bzero((char *) &serv_addr, sizeof(serv_addr));
      portno = atoi(argv[1]);
@@ -40,32 +40,31 @@ int main(int argc, char *argv[])
      serv_addr.sin_addr.s_addr = INADDR_ANY;
      serv_addr.sin_port = htons(portno);
      if (bind(sockfd, (struct sockaddr *) &serv_addr,
-              sizeof(serv_addr)) < 0) 
+              sizeof(serv_addr)) < 0)
               error("ERROR on binding");
      listen(sockfd,5);
      clilen = sizeof(cli_addr);
-     newsockfd = accept(sockfd, 
-                 (struct sockaddr *) &cli_addr, 
+     newsockfd = accept(sockfd,
+                 (struct sockaddr *) &cli_addr,
                  &clilen);
-     if (newsockfd < 0) 
+     if (newsockfd < 0)
           error("ERROR on accept");
-     
-     printf("server: got connection from %s port %d\n", inet_ntoa(cli_addr.sin_addr), ntohs(cli_addr.sin_port));
 
+     printf("server: got connection from %s port %d\n", inet_ntoa(cli_addr.sin_addr), ntohs(cli_addr.sin_port));
      struct person
      {
          char name[10];
          int age;
      };
+     person joe;
      while(true) {
-         person joe;
-         n =  recv(newsockfd, &joe, sizeof(joe), 0);
+         n = read(newsockfd,&joe,sizeof (joe));
          if (n < 0) error("ERROR reading from socket");
          printf("Here is the message: %s\n",joe.name);
-         n = send(sockfd, &joe, sizeof(joe), 0);
+         n = write(newsockfd,&joe,sizeof (joe));
          if (n < 0) error("ERROR writing to socket");
      }
      close(newsockfd);
      close(sockfd);
-     return 0; 
+     return 0;
 }

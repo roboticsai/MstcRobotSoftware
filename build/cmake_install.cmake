@@ -1,4 +1,4 @@
-# Install script for directory: /home/pi/socket_comm_rem_1
+# Install script for directory: /home/linux/socket_-comm_rem
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -45,5 +45,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/pi/socket_comm_rem_1/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/linux/socket_-comm_rem/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

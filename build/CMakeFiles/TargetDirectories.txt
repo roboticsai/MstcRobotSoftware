@@ -1,4 +1,6 @@
-/home/pi/socket_comm_rem_1/build/CMakeFiles/rebuild_cache.dir
-/home/pi/socket_comm_rem_1/build/CMakeFiles/edit_cache.dir
-/home/pi/socket_comm_rem_1/build/CMakeFiles/server.dir
-/home/pi/socket_comm_rem_1/build/CMakeFiles/client.dir
+/home/linux/socket_-comm_rem/build/CMakeFiles/edit_cache.dir
+/home/linux/socket_-comm_rem/build/CMakeFiles/rebuild_cache.dir
+/home/linux/socket_-comm_rem/build/CMakeFiles/key_press.dir
+/home/linux/socket_-comm_rem/build/CMakeFiles/mouse_movement.dir
+/home/linux/socket_-comm_rem/build/CMakeFiles/remote_computer.dir
+/home/linux/socket_-comm_rem/build/CMakeFiles/remote_robot.dir

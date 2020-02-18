@@ -14,6 +14,8 @@
 #include <iostream>
 using namespace std;
 using namespace cv;
+#define FRAME_WIDTH         640
+#define FRAME_HEIGHT        480
 void error(const char *msg)
 {
     perror(msg);
@@ -78,7 +80,30 @@ int main(int argc, char *argv[])
 
      printf("server: got connection from %s port %d\n", inet_ntoa(cli_addr.sin_addr), ntohs(cli_addr.sin_port));
 
+     int IM_HEIGHT, IM_WIDTH, imgSize, bytes = 0;
+     Mat img;
      while(true) {
+         IM_HEIGHT = FRAME_HEIGHT;
+         IM_WIDTH = FRAME_WIDTH;
+         img = Mat::zeros(FRAME_HEIGHT, FRAME_WIDTH, CV_8UC3);
+
+         imgSize = img.total()*img.elemSize();
+         uchar sockData[imgSize];
+
+         for(int i=0;i<imgSize;i+=bytes)
+           if ((bytes=recv(newsockfd, sockData+i, imgSize-i,0))==-1) error("recv failed");
+
+         int ptr=0;
+
+         for(int i=0;i<img.rows;++i)
+           for(int j=0;j<img.cols;++j)
+           {
+             img.at<Vec3b>(i,j) = Vec3b(sockData[ptr+0],sockData[ptr+1],sockData[ptr+2]);
+             ptr=ptr+3;
+           }
+
+         cout<<"img="<<img.at<Vec3b>(55,55)<<endl;
+
          n = read(newsockfd,&mousePos,sizeof (mousePos));
          if (n < 0) error("ERROR reading from socket");
          cout<<mousePos.x<<"\t"<<mousePos.y<<endl;

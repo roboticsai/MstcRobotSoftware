@@ -26,6 +26,14 @@ struct MousePos {
     int y = -1;
 } mousePos;
 
+enum Key {
+  w, s, d, a, q, e
+};
+
+struct KeyPress {
+  Key key;
+} keyPress;
+
 void GetMousePos(int event, int x, int y, int flags, void* userdata)
 {
      if  ( event == EVENT_LBUTTONDOWN )
@@ -118,12 +126,15 @@ int main(int argc, char *argv[])
         imgSize=img.total()*img.elemSize();
 
         n = send(sockfd, img.data, imgSize, 0);
-        if (n < 0) error("ERROR writing to socket");
+        if (n < 0) error("ERROR writing Image to socket");
 
-        n = read(sockfd,&mousePos,sizeof (mousePos));
+        n = read(sockfd,&keyPress,sizeof (mousePos));
         if (n < 0)
-             error("ERROR reading from socket");
+             error("ERROR reading KeyPress from socket");
         cout<<mousePos.x<<"\t"<<mousePos.y<<endl;
+
+        n = send(sockfd, img.data, imgSize, 0);
+        if (n < 0) error("ERROR writing Image to socket");
     }
     close(sockfd);
     return 0;

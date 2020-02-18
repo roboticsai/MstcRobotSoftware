@@ -129,6 +129,8 @@ int main(int argc, char *argv[])
         if (n < 0) error("ERROR writing Image to socket");
 
         n = read(sockfd,&keyPress,sizeof (mousePos));
+        // eg.
+        // cout<<keyPress.key<<endl;
         if (n < 0)
              error("ERROR reading KeyPress from socket");
         cout<<mousePos.x<<"\t"<<mousePos.y<<endl;

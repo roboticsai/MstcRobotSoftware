@@ -4,12 +4,6 @@
 using namespace std;
 using namespace cv;
 
-void error(const char *msg)
-{
-    perror(msg);
-    exit(1);
-}
-
 void CallBackFunc(int event, int x, int y, int flags, void* userdata)
 {
      if  ( event == EVENT_LBUTTONDOWN )
@@ -45,6 +39,7 @@ int main(int argv, char* args[])
         return 0;
      // Read image from file
      Mat img;
+
      while(true) {
          cap >> img;
          //if fail to read the image
@@ -63,14 +58,15 @@ int main(int argv, char* args[])
          //show the image
          imshow("My Window", img);
          auto key = waitKey(1);
-         switch (key) {
-             case 119: cout<<"move forward"<<endl; break;
-             case 100: cout<<"move right"<<endl; break;
-             case 97:cout<<"move left"<<endl; break;
-             case 115:cout<<"move backward"<<endl; break;
-             case 114:cout<<"decrease speed"<<endl; break;
-             case 101: cout<<"increase speed"<<endl; break;
-         }
+          switch (key) {
+              case 119: cout<<"move forward"<<endl; break;
+              case 100: cout<<"move right"<<endl; break;
+              case 97:cout<<"move left"<<endl; break;
+              case 115:cout<<"move backward"<<endl; break;
+              case 114:cout<<"decrease speed"<<endl; break;
+              case 101: cout<<"increase speed"<<endl; break;
+          }
+
      }
 
      return 0;

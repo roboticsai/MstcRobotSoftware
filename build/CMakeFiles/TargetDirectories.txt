@@ -1,6 +1,0 @@
-/home/linux/socket_-comm_rem/build/CMakeFiles/edit_cache.dir
-/home/linux/socket_-comm_rem/build/CMakeFiles/rebuild_cache.dir
-/home/linux/socket_-comm_rem/build/CMakeFiles/key_press.dir
-/home/linux/socket_-comm_rem/build/CMakeFiles/mouse_movement.dir
-/home/linux/socket_-comm_rem/build/CMakeFiles/remote_computer.dir
-/home/linux/socket_-comm_rem/build/CMakeFiles/remote_robot.dir

@@ -6,11 +6,64 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h> 
+#include "opencv2/highgui/highgui.hpp"
+#include <iostream>
 
+using namespace std;
+using namespace cv;
 void error(const char *msg)
 {
     perror(msg);
     exit(0);
+}
+
+struct MousePos {
+    int x = -1;
+    int y = -1;
+} mousePos;
+
+void GetMousePos(int event, int x, int y, int flags, void* userdata)
+{
+     if  ( event == EVENT_LBUTTONDOWN )
+     {
+          mousePos.x = x;
+          mousePos.y = y;
+     }
+     else if  ( event == EVENT_RBUTTONDOWN )
+     {
+         mousePos.x = x;
+         mousePos.y = y;     }
+     else if  ( event == EVENT_MBUTTONDOWN )
+     {
+         mousePos.x = x;
+         mousePos.y = y;     }
+     else if ( event == EVENT_MOUSEMOVE )
+     {
+         mousePos.x = x;
+         mousePos.y = y;     }
+}
+
+
+void CallBackFunc(int event, int x, int y, int flags, void* userdata)
+{
+     if  ( event == EVENT_LBUTTONDOWN )
+     {
+         mousePos.x = x;
+         mousePos.y = y;
+     }
+     else if  ( event == EVENT_RBUTTONDOWN )
+     {
+         mousePos.x = x;
+         mousePos.y = y;     }
+     else if  ( event == EVENT_MBUTTONDOWN )
+     {
+         mousePos.x = x;
+         mousePos.y = y;     }
+     else if ( event == EVENT_MOUSEMOVE )
+     {
+         mousePos.x = x;
+         mousePos.y = y;
+     }
 }
 
 int main(int argc, char *argv[])
@@ -41,20 +94,48 @@ int main(int argc, char *argv[])
     serv_addr.sin_port = htons(portno);
     if (connect(sockfd,(struct sockaddr *) &serv_addr,sizeof(serv_addr)) < 0) 
         error("ERROR connecting");
-    struct person
-    {
-        char name[10];
-        int age;
-    };
-    person joe = { "Joe", 35 };
+
+    int camera_ind = 0;
+    if (argc > 2){
+        camera_ind = atoi(argv[3]);
+        cout<<"Camera index ="<<"\t"<<camera_ind<<endl;
+    }
+    else{
+        cout<<"Please give camera index as parameter!"<<endl;
+        return 1;
+    }
+    cv::VideoCapture cap;
+    if(!cap.open(camera_ind))
+        return 0;
+     // Read image from file
+    Mat img;
+
     while(true) {
-        n = write(sockfd,&joe,sizeof (joe));
+        cap >> img;
+        //if fail to read the image
+        if ( img.empty() )
+        {
+             cout << "Error loading the image" << endl;
+             return -1;
+        }
+
+        //Create a window
+        namedWindow("My Window", 1);
+
+        //set the callback function for any mouse event
+        setMouseCallback("My Window", CallBackFunc, NULL);
+
+        //show the image
+        imshow("My Window", img);
+        waitKey(1);
+
+        n = write(sockfd,&mousePos,sizeof (mousePos));
         if (n < 0)
              error("ERROR writing to socket");
-        n = read(sockfd,&joe,sizeof (joe));
+        n = read(sockfd,&mousePos,sizeof (mousePos));
         if (n < 0)
              error("ERROR reading from socket");
-        printf("%s\n",joe.name);
+        cout<<mousePos.x<<"\t"<<mousePos.y<<endl;
     }
     close(sockfd);
     return 0;

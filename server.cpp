@@ -11,13 +11,39 @@
 #include "opencv2/core/core.hpp"
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
-
+#include <iostream>
 using namespace std;
 using namespace cv;
 void error(const char *msg)
 {
     perror(msg);
     exit(1);
+}
+
+struct MousePos {
+    int x = -1;
+    int y = -1;
+} mousePos;
+
+void GetMousePos(int event, int x, int y, int flags, void* userdata)
+{
+     if  ( event == EVENT_LBUTTONDOWN )
+     {
+          mousePos.x = x;
+          mousePos.y = y;
+     }
+     else if  ( event == EVENT_RBUTTONDOWN )
+     {
+         mousePos.x = x;
+         mousePos.y = y;     }
+     else if  ( event == EVENT_MBUTTONDOWN )
+     {
+         mousePos.x = x;
+         mousePos.y = y;     }
+     else if ( event == EVENT_MOUSEMOVE )
+     {
+         mousePos.x = x;
+         mousePos.y = y;     }
 }
 
 int main(int argc, char *argv[])
@@ -51,17 +77,12 @@ int main(int argc, char *argv[])
           error("ERROR on accept");
 
      printf("server: got connection from %s port %d\n", inet_ntoa(cli_addr.sin_addr), ntohs(cli_addr.sin_port));
-     struct person
-     {
-         char name[10];
-         int age;
-     };
-     person joe;
+
      while(true) {
-         n = read(newsockfd,&joe,sizeof (joe));
+         n = read(newsockfd,&mousePos,sizeof (mousePos));
          if (n < 0) error("ERROR reading from socket");
-         printf("Here is the message: %s\n",joe.name);
-         n = write(newsockfd,&joe,sizeof (joe));
+         cout<<mousePos.x<<"\t"<<mousePos.y<<endl;
+         n = write(newsockfd,&mousePos,sizeof (mousePos));
          if (n < 0) error("ERROR writing to socket");
      }
      close(newsockfd);

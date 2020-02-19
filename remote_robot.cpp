@@ -8,8 +8,14 @@
 #include <netdb.h>
 #include "common_header.h"
 #include <iostream>
+#include "opencv2/core/core.hpp"
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+#define FRAME_WIDTH         640
+#define FRAME_HEIGHT        480
 
 using namespace std;
+using namespace cv;
 void error(const char *msg)
 {
     perror(msg);
@@ -41,7 +47,43 @@ int main(int argc, char *argv[])
     serv_addr.sin_port = htons(portno);
     if (connect(sockfd,(struct sockaddr *) &serv_addr,sizeof(serv_addr)) < 0)
         error("ERROR connecting");
+
+    cv::VideoCapture cap;
+    if(!cap.open(-1))
+        return 0;
+     // Read image from file
+    Mat img;
+    cap.set(CV_CAP_PROP_FRAME_WIDTH,640);
+    cap.set(CV_CAP_PROP_FRAME_HEIGHT,460);
+    int IM_HEIGHT, IM_WIDTH, imgSize;
+
     while(true) {
+        cap >> img;
+        //if fail to read the image
+        if ( img.empty() )
+        {
+             cout << "Error loading the image" << endl;
+             return -1;
+        }
+
+        int height = img.rows;
+        int width = img.cols;
+
+        Mat cropped = Mat(img, Rect(width/2 - width/7,
+                                           height/2 - height/9,
+                                           2*width/7, 2*height/7));
+        img = cropped;
+
+        IM_HEIGHT = FRAME_HEIGHT;
+        IM_WIDTH = FRAME_WIDTH;
+
+        resize(img, img, Size( IM_WIDTH , IM_HEIGHT ));
+
+        imgSize=img.total()*img.elemSize();
+
+        n = send(sockfd, img.data, imgSize, 0);
+        if (n < 0) error("ERROR writing img to socket");
+
         n = read(sockfd,&userInput,sizeof (userInput));
         if (n < 0)
              error("ERROR user input from socket");

@@ -12,6 +12,9 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include "common_header.h"
+#define FRAME_WIDTH         640
+#define FRAME_HEIGHT        480
+
 using namespace std;
 using namespace cv;
 void error(const char *msg)
@@ -67,8 +70,30 @@ int main(int argc, char *argv[])
 
      printf("server: got connection from %s port %d\n", inet_ntoa(cli_addr.sin_addr), ntohs(cli_addr.sin_port));
 
+     int IM_HEIGHT, IM_WIDTH, imgSize, bytes = 0;
+     Mat img;
      while(true) {
+          IM_HEIGHT = FRAME_HEIGHT;
+          IM_WIDTH = FRAME_WIDTH;
+          img = Mat::zeros(FRAME_HEIGHT, FRAME_WIDTH, CV_8UC3);
+
+          imgSize = img.total()*img.elemSize();
+          uchar sockData[imgSize];
+
+          for(int i=0;i<imgSize;i+=bytes)
+            if ((bytes=recv(newsockfd, sockData+i, imgSize-i,0))==-1) error("recv failed");
+
+          int ptr=0;
+
+          for(int i=0;i<img.rows;++i)
+            for(int j=0;j<img.cols;++j)
+            {
+              img.at<Vec3b>(i,j) = Vec3b(sockData[ptr+0],sockData[ptr+1],sockData[ptr+2]);
+              ptr=ptr+3;
+            }
+
          namedWindow("My Window", 1);
+         imshow("My Window",img);
          userInput.mMouse.mouseBut = None;
          setMouseCallback("My Window", CallBackFunc, NULL);
          auto key = waitKey(1);

@@ -66,19 +66,6 @@ int main(int argc, char *argv[])
              return -1;
         }
 
-        int height = img.rows;
-        int width = img.cols;
-
-        Mat cropped = Mat(img, Rect(width/2 - width/7,
-                                           height/2 - height/9,
-                                           2*width/7, 2*height/7));
-        img = cropped;
-
-        IM_HEIGHT = FRAME_HEIGHT;
-        IM_WIDTH = FRAME_WIDTH;
-
-        resize(img, img, Size( IM_WIDTH , IM_HEIGHT ));
-
         imgSize=img.total()*img.elemSize();
 
         n = send(sockfd, img.data, imgSize, 0);

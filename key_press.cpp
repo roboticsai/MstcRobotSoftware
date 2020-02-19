@@ -78,6 +78,7 @@ int main(int argc, char ** argv) {
       }
       if(event.type == sf::Event::MouseMoved) {
         std::cout<<"mouse pos="<<event.mouseMove.x<<"\t"<<event.mouseMove.y<<endl;
+        sf::Vector2i localPosition = sf::Mouse::getPosition(renderWindow);
       }
     }
 

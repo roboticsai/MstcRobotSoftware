@@ -4,69 +4,34 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <sys/types.h> 
+#include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include "opencv2/core/core.hpp"
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
-#include <iostream>
+#include "common_header.h"
 using namespace std;
 using namespace cv;
-#define FRAME_WIDTH         640
-#define FRAME_HEIGHT        480
 void error(const char *msg)
 {
     perror(msg);
     exit(1);
 }
 
-struct MousePos {
-    int x = -1;
-    int y = -1;
-} mousePos;
-
-void GetMousePos(int event, int x, int y, int flags, void* userdata)
-{
-     if  ( event == EVENT_LBUTTONDOWN )
-     {
-          mousePos.x = x;
-          mousePos.y = y;
-     }
-     else if  ( event == EVENT_RBUTTONDOWN )
-     {
-         mousePos.x = x;
-         mousePos.y = y;     }
-     else if  ( event == EVENT_MBUTTONDOWN )
-     {
-         mousePos.x = x;
-         mousePos.y = y;     }
-     else if ( event == EVENT_MOUSEMOVE )
-     {
-         mousePos.x = x;
-         mousePos.y = y;     }
-}
-
 void CallBackFunc(int event, int x, int y, int flags, void* userdata)
 {
-     if  ( event == EVENT_LBUTTONDOWN )
-     {
-         mousePos.x = x;
-         mousePos.y = y;
-     }
-     else if  ( event == EVENT_RBUTTONDOWN )
-     {
-         mousePos.x = x;
-         mousePos.y = y;     }
-     else if  ( event == EVENT_MBUTTONDOWN )
-     {
-         mousePos.x = x;
-         mousePos.y = y;     }
-     else if ( event == EVENT_MOUSEMOVE )
-     {
-         mousePos.x = x;
-         mousePos.y = y;
+     switch (event) {
+     case EVENT_LBUTTONUP: userInput.mMouse.mouseBut = LeftBut; break;
+     case EVENT_RBUTTONDOWN: userInput.mMouse.mouseBut = RightBut; break;
+     case EVENT_MBUTTONDOWN: userInput.mMouse.mouseBut = MidBut; break;
+     case EVENT_MOUSEMOVE: userInput.mMouse.mMousePos = {x,y}; break;
+     case EVENT_MOUSEWHEEL:
+         if (getMouseWheelDelta(flags)>0)
+             userInput.mMouse.MidleButScrollPos -= userInput.mMouse.MidleButScrollPos;
+         else
+             userInput.mMouse.MidleButScrollPos += userInput.mMouse.MidleButScrollPos;
      }
 }
 
@@ -102,47 +67,20 @@ int main(int argc, char *argv[])
 
      printf("server: got connection from %s port %d\n", inet_ntoa(cli_addr.sin_addr), ntohs(cli_addr.sin_port));
 
-     int IM_HEIGHT, IM_WIDTH, imgSize, bytes = 0;
-     Mat img;
      while(true) {
-         IM_HEIGHT = FRAME_HEIGHT;
-         IM_WIDTH = FRAME_WIDTH;
-         img = Mat::zeros(FRAME_HEIGHT, FRAME_WIDTH, CV_8UC3);
-
-         imgSize = img.total()*img.elemSize();
-         uchar sockData[imgSize];
-
-         for(int i=0;i<imgSize;i+=bytes)
-           if ((bytes=recv(newsockfd, sockData+i, imgSize-i,0))==-1) error("recv failed");
-
-         int ptr=0;
-
-         for(int i=0;i<img.rows;++i)
-           for(int j=0;j<img.cols;++j)
-           {
-             img.at<Vec3b>(i,j) = Vec3b(sockData[ptr+0],sockData[ptr+1],sockData[ptr+2]);
-             ptr=ptr+3;
-           }
-
-         //Create a window
          namedWindow("My Window", 1);
-
-         //set the callback function for any mouse event
          setMouseCallback("My Window", CallBackFunc, NULL);
-
-         //show the image
-         imshow("My Window", img);
-         waitKey(1);
-
-         n = write(sockfd,&mousePos,sizeof (mousePos));
-         if (n < 0)
-              error("ERROR writing to socket");
-
-         n = read(newsockfd,&mousePos,sizeof (mousePos));
-         if (n < 0) error("ERROR reading from socket");
-         cout<<mousePos.x<<"\t"<<mousePos.y<<endl;
-         n = write(newsockfd,&mousePos,sizeof (mousePos));
-         if (n < 0) error("ERROR writing to socket");
+         auto key = waitKey(1);
+         switch (key) {
+             case 119: userInput.mKey = w; break;
+             case 100: userInput.mKey = d; break;
+             case 97:  userInput.mKey = a; break;
+             case 115: userInput.mKey = s; break;
+             case 114: userInput.mKey = q; break;
+             case 101: userInput.mKey = e; break;
+         }
+         n = write(newsockfd,&userInput,sizeof (userInput));
+         if (n < 0) error("ERROR writing user input to socket");
      }
      close(newsockfd);
      close(sockfd);

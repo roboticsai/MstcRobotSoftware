@@ -4,7 +4,7 @@
 using namespace std;
 
 enum Key {
-  null, w, s, a, d, e, q, wa, wd, sa, sd
+  null, eforward, ebackward, eleft, eright, inc_speed, dec_speed, stop
 };
 
 enum MouseBut {

@@ -73,12 +73,13 @@ int main(int argc, char *argv[])
          setMouseCallback("My Window", CallBackFunc, NULL);
          auto key = waitKey(1);
          switch (key) {
-             case 119: userInput.mKey = w; break;
-             case 100: userInput.mKey = d; break;
-             case 97:  userInput.mKey = a; break;
-             case 115: userInput.mKey = s; break;
-             case 114: userInput.mKey = q; break;
-             case 101: userInput.mKey = e; break;
+             case 119: userInput.mKey = eforward; break;
+             case 100: userInput.mKey = eright; break;
+             case 97:  userInput.mKey = eleft; break;
+             case 115: userInput.mKey = ebackward; break;
+             case 113: userInput.mKey = dec_speed; break;
+             case 101: userInput.mKey = inc_speed; break;
+             case 32: userInput.mKey = stop;
          }
          n = write(newsockfd,&userInput,sizeof (userInput));
          if (n < 0) error("ERROR writing user input to socket");

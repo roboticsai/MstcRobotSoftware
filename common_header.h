@@ -4,11 +4,11 @@
 using namespace std;
 
 enum Key {
-  w, s, a, d, e, q, wa, wd, sa, sd
+  null, w, s, a, d, e, q, wa, wd, sa, sd
 };
 
 enum MouseBut {
-    RightBut, LeftBut, MidBut
+    None, RightBut, LeftBut, MidBut
 };
 
 struct MousePos {
@@ -36,6 +36,11 @@ public:
         ar & mMouse;
     }
 } userInput;
+
+class RobotData {
+public:
+
+};
 
 std::ostream& operator<<(std::ostream &os, const UserInput &userInput) {
     os<<"{{Key:"<<userInput.mKey<<"},{Mouse Pos :("<<userInput.mMouse.mMousePos.x<<","<<userInput.mMouse.mMousePos.y<<"),MouseBut Clked : "<<userInput.mMouse.mouseBut<<",Scroll pos : "<<userInput.mMouse.MidleButScrollPos<<"}}"<<endl;

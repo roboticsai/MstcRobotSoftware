@@ -69,6 +69,7 @@ int main(int argc, char *argv[])
 
      while(true) {
          namedWindow("My Window", 1);
+         userInput.mMouse.mouseBut = None;
          setMouseCallback("My Window", CallBackFunc, NULL);
          auto key = waitKey(1);
          switch (key) {

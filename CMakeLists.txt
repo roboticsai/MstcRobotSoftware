@@ -14,8 +14,8 @@ target_link_libraries(remote_robot ${OpenCV_LIBRARIES})
 add_executable(rem_rob_aud rem_rob_aud.cpp)
 target_link_libraries(rem_rob_aud sfml-graphics sfml-audio)
 
-add_executable(key_press key_press.cpp)
-target_link_libraries(key_press sfml-graphics sfml-audio ${OpenCV_LIBRARIES})
+add_executable(user_input user_input.cpp)
+target_link_libraries(user_input sfml-graphics sfml-audio ${OpenCV_LIBRARIES})
 
 add_executable(audio_socket Sockets.cpp TCP.cpp UDP.cpp)
 target_link_libraries(audio_socket sfml-graphics sfml-audio sfml-window sfml-network)

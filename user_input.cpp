@@ -2,7 +2,6 @@
 #include "common_header.h"
 int main(int argc, char *argv[]) {
   sf::RenderWindow renderWindow(sf::VideoMode(640, 480), "SFML Demo");
-  Controller controller;
 
   sf::Event event;
   renderWindow.setKeyRepeatEnabled(false);
@@ -11,9 +10,8 @@ int main(int argc, char *argv[]) {
   while (renderWindow.isOpen()){
     while (renderWindow.pollEvent(event)){
       user_input.GetUserInput(renderWindow,event);
-      user_input.DisPlayValues();
     }
-
+    user_input.DisPlayValues();
     renderWindow.clear();
     renderWindow.display();
   }

@@ -51,9 +51,9 @@ int main(int argc, char *argv[])
          while (renderWindow.pollEvent(event)){
              GetUserInput(renderWindow,event,user_input);
          }
-         user_input.DisPlayValues();
      SendUserInput(controller.newsockfd,user_input);
-
+     ReadRobotInfo(controller.newsockfd,robot_data);
+     robot_data.Display();
      renderWindow.draw(sprite);
      renderWindow.display();
    }

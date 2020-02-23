@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
       if (n < 0) error("ERROR writing img to socket");
 
       ReadUserInput(robot.sockfd,user_input);
-
+      SendRobotInfo(robot.sockfd,robot_data);
       user_input.DisPlayValues();
     }
     return 0;

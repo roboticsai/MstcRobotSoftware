@@ -5,7 +5,25 @@
 #include <unordered_map>
 #include <iostream>
 #include <list>
+#include "opencv2/core/core.hpp"
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+#include "SFML/Graphics.hpp"
+#include <unordered_map>
+#include <list>
+#define PORT_NUM 2323
+
 using namespace std;
+using namespace cv;
 
 enum Key {
   null = -1, eforward = 0, ebackward=115, eleft=97, eright=100, inc_speed=101, dec_speed=113
@@ -19,7 +37,7 @@ struct Mouse {
     sf::Vector2i mMousePos;
     MouseBut mouseBut;
     double MidleButScrollPos = 0.0;
-} mouse;
+};
 
 class UserInput {
 public:
@@ -40,64 +58,34 @@ public:
     }
 };
 
+class Controller {
+public:
+  int sockfd, newsockfd;
+  socklen_t clilen;
+  char buffer[256];
+  struct sockaddr_in serv_addr, cli_addr;
+  int n;
+  Controller();
+  ~Controller();
+  void WriteSocket(void *data);
+  void ReadSocket(void *data);
+ };
+
+class Robot {
+public:
+  int sockfd, n;
+  struct sockaddr_in serv_addr;
+  struct hostent *server;
+
+  char buffer[256];
+  Robot(char *server_name);
+  ~Robot();
+  void WriteSocket(void *data);
+  void ReadSocket(void *data);
+
+};
+
 class RobotData {
 public:
 
 };
-
-void UserInput::DisPlayValues() {
-  if(mKeys.empty())
-    std::cout<<"{{Key:"<<null<<"},{Mouse Pos :("<<mMouse.mMousePos.x<<","<<mMouse.mMousePos.y<<"),MouseBut Clked : "<<mMouse.mouseBut<<",Scroll pos : "<<mMouse.MidleButScrollPos<<"}}"<<std::endl;
-  else if(mKeys.size() == 1) {
-    std::cout<<"{{Key:"<<mKeys[0]<<"},{Mouse Pos :("<<mMouse.mMousePos.x<<","<<mMouse.mMousePos.y<<"),MouseBut Clked : "<<mMouse.mouseBut<<",Scroll pos : "<<mMouse.MidleButScrollPos<<"}}"<<endl;
-  }
-  else if(mKeys.size() == 2) {
-    std::cout<<"{{Key:"<<mKeys[0]<<","<<mKeys[1]<<"},{Mouse Pos :("<<mMouse.mMousePos.x<<","<<mMouse.mMousePos.y<<"),MouseBut Clked : "<<mMouse.mouseBut<<",Scroll pos : "<<mMouse.MidleButScrollPos<<"}}"<<endl;
-  }
-  else if(mKeys.size() == 3) {
-    std::cout<<"{{Key:"<<mKeys[0]<<","<<mKeys[1]<<","<<mKeys[1]<<"},{Mouse Pos :("<<mMouse.mMousePos.x<<","<<mMouse.mMousePos.y<<"),MouseBut Clked : "<<mMouse.mouseBut<<",Scroll pos : "<<mMouse.MidleButScrollPos<<"}}"<<endl;
-  }
-}
-
-UserInput::UserInput() {
-  std::cout<<"construtor called"<<std::endl;
-}
-
-void UserInput::GetUserInput(sf::RenderWindow &renderWindow,sf::Event event) {
-  if (event.type == sf::Event::EventType::Closed)
-    renderWindow.close();
-
-  if (event.type == sf::Event::EventType::KeyPressed){
-    if (keys.count(event.key.code) == 0){
-      keys[event.key.code] = true;
-      changedKeys.push_back(event.key.code);
-    }
-  }
-  if (event.type == sf::Event::EventType::KeyReleased){
-    if (keys.count(event.key.code) == 1){
-      keys.erase(event.key.code);
-      changedKeys.push_back(event.key.code);
-    }
-  }
-  mKeys.clear();
-  for (auto& keyValue : keys)
-    mKeys.push_back(keyValue.first);
-
-  sf::Vector2i localPosition = sf::Mouse::getPosition(renderWindow);
-  mMouse.mouseBut = None;
-  if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-    mMouse.mouseBut = LeftBut;
-  }
-  else if(sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
-    mMouse.mouseBut = RightBut;
-  }
-  else if(sf::Mouse::isButtonPressed(sf::Mouse::Middle)) {
-    mMouse.mouseBut = MidBut;
-  }
-  else if(event.type == sf::Event::MouseWheelScrolled) {
-    mMouse.MidleButScrollPos+=event.mouseWheelScroll.delta;
-  }
-  if(event.type == sf::Event::MouseMoved) {
-    mMouse.mMousePos = localPosition;
-  }
-}

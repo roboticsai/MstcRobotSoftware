@@ -1,27 +1,66 @@
-// This example demostrates the main loop
-
-#include "SFML/Graphics.hpp"
-#include <unordered_map>
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
 #include <iostream>
-#include <list>
-#include "common_header.h"
+#include <sstream>
 
-int main(int argc, char ** argv) {
-  sf::RenderWindow renderWindow(sf::VideoMode(640, 480), "SFML Demo");
+using namespace boost::archive;
+std::stringstream ss;
 
-  sf::Event event;
+class animal
+{
+public:
+  animal() = default;
+  animal(int legs) : legs_{legs} {}
+  int legs() const { return legs_; }
 
-  // If true, you will continue to receive keyboard events when a key is held down
-  // If false, it will only fire one event per press until released
-  renderWindow.setKeyRepeatEnabled(false);
-  UserInput user_input;
-  while (renderWindow.isOpen()){
-    while (renderWindow.pollEvent(event)){
-      user_input.GetUserInput(renderWindow,event);
-      user_input.DisPlayValues();
-    }
-    renderWindow.clear();
-    renderWindow.display();
+private:
+  friend class boost::serialization::access;
+
+  template <typename Archive>
+  void serialize(Archive &ar, const unsigned int version) { ar & legs_; }
+
+  int legs_;
+};
+
+class bird : public animal
+{
+public:
+  bird() = default;
+  bird(int legs, bool can_fly) :
+    animal{legs}, can_fly_{can_fly} {}
+  bool can_fly() const { return can_fly_; }
+
+private:
+  friend class boost::serialization::access;
+
+  template <typename Archive>
+  void serialize(Archive &ar, const unsigned int version)
+  {
+    ar & boost::serialization::base_object<animal>(*this);
+    ar & can_fly_;
   }
 
+  bool can_fly_;
+};
+
+void save()
+{
+  text_oarchive oa{ss};
+  bird penguin{2, false};
+  oa << penguin;
+}
+
+void load()
+{
+  text_iarchive ia{ss};
+  bird penguin;
+  ia >> penguin;
+  std::cout << penguin.legs() << '\n';
+  std::cout << std::boolalpha << penguin.can_fly() << '\n';
+}
+
+int main()
+{
+  save();
+  load();
 }

@@ -3,20 +3,27 @@ cmake_minimum_required(VERSION 3.2)
 project(socket_comm_rem)
 
 find_package(OpenCV REQUIRED)
-set(CMAKE_PREFIX_PATH /home/linux/SFML-2.5.1/lib/cmake/SFML)
-find_package(SFML COMPONENTS graphics audio window system network)
+find_package(SFML COMPONENTS graphics system window)
+find_package(Boost COMPONENTS iostreams serialization REQUIRED)
 
-#add_executable(remote_computer remote_computer.cpp)
-#target_link_libraries(remote_computer sfml-graphics sfml-audio ${OpenCV_LIBRARIES})
-#add_executable(remote_robot remote_robot.cpp)
-#target_link_libraries(remote_robot sfml-graphics sfml-audio ${OpenCV_LIBRARIES})
+set(SOCKET_COMM_SRC
+    socket_comm.h
+    socket_comm.cpp
+)
 
-add_executable(rem_rob_aud rem_rob_aud.cpp)
-target_link_libraries(rem_rob_aud sfml-graphics sfml-audio ${OpenCV_LIBRARIES})
+set(DATA_TYPES_SRC
+    data_types.h
+    data_types.cpp
+)
+
+add_library(socket_comm SHARED STATIC ${SOCKET_COMM_SRC})
+target_link_libraries(socket_comm sfml-graphics sfml-system sfml-window ${OpenCV_LIBRARIES} ${Boost_LIBRARIES})
+
+add_executable(remote_robot remote_robot.cpp)
+target_link_libraries(remote_robot socket_comm)
+
+add_executable(remote_computer remote_computer.cpp)
+target_link_libraries(remote_computer socket_comm)
 
 add_executable(user_input user_input.cpp)
-target_link_libraries(user_input sfml-graphics sfml-audio ${OpenCV_LIBRARIES})
-
-add_executable(audio_socket Sockets.cpp TCP.cpp UDP.cpp)
-target_link_libraries(audio_socket sfml-graphics sfml-audio sfml-window sfml-network)
-
+target_link_libraries(user_input socket_comm)

@@ -102,12 +102,29 @@ void GetUserInput(sf::RenderWindow &renderWindow,sf::Event event,UserInput &user
 class RobotData {
 public:
   int x = 3;
+  void Display() {
+    std::cout<<x<<std::endl;
+  }
   friend class boost::serialization::access;
   template<class Archive>
   void serialize(Archive & ar, const unsigned int version)
   {
       ar & x;
   }
+};
+
+class SfImg {
+public:
+    SfImg(int sockfd_) {
+        sockfd = sockfd_;
+    }
+    ~SfImg() {}
+    int sockfd;
+    sf::Sprite sprite;
+    cv::Mat img; int imgSize, bytes = 0, FRAME_HEIGHT=460, FRAME_WIDTH=640;
+    sf::Image image;
+    sf::Texture texture;
+    void ReadOcvImg();
 };
 
 

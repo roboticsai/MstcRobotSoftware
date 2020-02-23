@@ -11,7 +11,7 @@
 #include <iostream>
 #include <netdb.h>
 
-#define PORT_NUM 2323
+#define PORT_NUM 2324
 
 #include <iostream>
 #include <unordered_map>
@@ -43,8 +43,6 @@
 
 using namespace boost::interprocess;
 using namespace boost::archive;
-std::stringstream string_stream;
-
 using namespace std;
 using namespace cv;
 
@@ -82,22 +80,21 @@ struct Mouse {
     }
 };
 
+extern std::unordered_map<int, bool> keys;
+extern std::list<int> changedKeys;
 class UserInput {
 public:
     UserInput();
     ~UserInput() {};
-    std::vector<int> mKeys;
+    int aKeys[3];
     Mouse mMouse;
-    std::unordered_map<int, bool> keys;
-    std::list<int> changedKeys;
     void DisPlayValues();
-    friend class boost::serialization::access;
-    template<class Archive>
-    void serialize(Archive & ar, const unsigned int version)
-    {
-        ar & mKeys;
-        ar & mMouse;
-    }
+//    friend class boost::serialization::access;
+//    template<class Archive>
+//    void serialize(Archive & ar, const unsigned int version)
+//    {
+//        ar & mMouse;
+//    }
 };
 
 void GetUserInput(sf::RenderWindow &renderWindow,sf::Event event,UserInput &userInput);
@@ -131,33 +128,6 @@ public:
   ~Controller();
  };
 
-class Robot {
-public:
-  int sockfd;
-  struct sockaddr_in serv_addr;
-  struct hostent *server;
-  Robot(const char *server_name) {
-    sockfd = socket(AF_INET, SOCK_STREAM, 0);
-    if (sockfd < 0)
-        error("ERROR opening socket");
-    server = gethostbyname(server_name);
-    if (server == NULL) {
-        fprintf(stderr,"ERROR, no such host\n");
-        exit(0);
-    }
-    bzero((char *) &serv_addr, sizeof(serv_addr));
-    serv_addr.sin_family = AF_INET;
-    bcopy((char *)server->h_addr,
-         (char *)&serv_addr.sin_addr.s_addr,
-         server->h_length);
-    serv_addr.sin_port = htons(PORT_NUM);
-    if (connect(sockfd,(struct sockaddr *) &serv_addr,sizeof(serv_addr)) < 0)
-        error("ERROR connecting");
-  }
-  ~Robot() {
-    close(sockfd);
-  }
-};
 
 void SendUserInput(int sockfd,UserInput &data);
 

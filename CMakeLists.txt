@@ -3,7 +3,8 @@ cmake_minimum_required(VERSION 3.2)
 project(socket_comm_rem)
 
 find_package(OpenCV REQUIRED)
-find_package(SFML COMPONENTS graphics system window)
+set(CMAKE_PREFIX_PATH /home/linux/SFML-2.5.1/lib/cmake/SFML)
+find_package(SFML 2.5 COMPONENTS graphics system window)
 find_package(Boost COMPONENTS iostreams serialization REQUIRED)
 
 set(SOCKET_COMM_SRC
@@ -20,7 +21,7 @@ add_library(socket_comm SHARED STATIC ${SOCKET_COMM_SRC})
 target_link_libraries(socket_comm sfml-graphics sfml-system sfml-window ${OpenCV_LIBRARIES} ${Boost_LIBRARIES})
 
 add_executable(remote_robot remote_robot.cpp)
-target_link_libraries(remote_robot socket_comm)
+target_link_libraries(remote_robot ${OpenCV_LIBRARIES} ${Boost_LIBRARIES})
 
 add_executable(remote_computer remote_computer.cpp)
 target_link_libraries(remote_computer socket_comm)

@@ -34,72 +34,72 @@ Controller::~Controller() {
 };
 
 void SendUserInput(int sockfd,UserInput &data) {
-  text_oarchive oa{string_stream};
-  oa << data;
-  auto n = write(sockfd,&oa,sizeof (oa));
+  auto n = write(sockfd,&data,sizeof (data));
   if (n < 0)
        error("ERROR writing to socket");
 }
 
 void ReadRobotInfo(int sockfd,RobotData &data) {
-  auto n = read(sockfd,&string_stream,sizeof (string_stream));
+  auto n = read(sockfd,&data,sizeof (data));
   if (n < 0) error("ERROR reading from socket");
 //  text_iarchive ia{string_stream};
 //  ia >> data;
 }
 
 void SendRobotInfo(int sockfd,RobotData &data) {
-  text_oarchive oa{string_stream};
-  oa << data;
-  auto n = write(sockfd,&oa,sizeof (oa));
+  auto n = write(sockfd,&data,sizeof (data));
   if (n < 0)
        error("ERROR writing to socket");
 }
 
 void ReadUserInput(int sockfd,UserInput &data) {
-  auto n = read(sockfd,&string_stream,sizeof (string_stream));
+  auto n = read(sockfd,&data,sizeof (data));
   if (n < 0) error("ERROR reading from socket");
 //  text_iarchive ia{string_stream};
 //  ia >> data;
 }
 
 UserInput::UserInput() {
-  std::cout<<"construtor called"<<std::endl;
+    for(int i=0;i<3;i++)
+        aKeys[i] = -1;
 }
 
 void UserInput::DisPlayValues() {
-  if(mKeys.empty())
-    std::cout<<"{{Key:"<<null<<"},{Mouse Pos :("<<mMouse.mMousePos.x<<","<<mMouse.mMousePos.y<<"),MouseBut Clked : "<<mMouse.mouseBut<<",Scroll pos : "<<mMouse.MidleButScrollPos<<"}}"<<std::endl;
-  else if(mKeys.size() == 1) {
-    std::cout<<"{{Key:"<<mKeys[0]<<"},{Mouse Pos :("<<mMouse.mMousePos.x<<","<<mMouse.mMousePos.y<<"),MouseBut Clked : "<<mMouse.mouseBut<<",Scroll pos : "<<mMouse.MidleButScrollPos<<"}}"<<endl;
-  }
-  else if(mKeys.size() == 2) {
-    std::cout<<"{{Key:"<<mKeys[0]<<","<<mKeys[1]<<"},{Mouse Pos :("<<mMouse.mMousePos.x<<","<<mMouse.mMousePos.y<<"),MouseBut Clked : "<<mMouse.mouseBut<<",Scroll pos : "<<mMouse.MidleButScrollPos<<"}}"<<endl;
-  }
-  else if(mKeys.size() == 3) {
-    std::cout<<"{{Key:"<<mKeys[0]<<","<<mKeys[1]<<","<<mKeys[1]<<"},{Mouse Pos :("<<mMouse.mMousePos.x<<","<<mMouse.mMousePos.y<<"),MouseBut Clked : "<<mMouse.mouseBut<<",Scroll pos : "<<mMouse.MidleButScrollPos<<"}}"<<endl;
-  }
+      std::cout<<"{{Key:"<<aKeys[0]<<"\t"<<aKeys[1]<<"\t"<<aKeys[2]<<"},{Mouse Pos :("<<mMouse.mMousePos.x<<","<<mMouse.mMousePos.y<<"),MouseBut Clked : "<<mMouse.mouseBut<<",Scroll pos : "<<mMouse.MidleButScrollPos<<"}}"<<std::endl;
+//  else if(mKeys.size() == 1) {
+//    std::cout<<"{{Key:"<<mKeys[0]<<"},{Mouse Pos :("<<mMouse.mMousePos.x<<","<<mMouse.mMousePos.y<<"),MouseBut Clked : "<<mMouse.mouseBut<<",Scroll pos : "<<mMouse.MidleButScrollPos<<"}}"<<endl;
+//  }
+//  else if(mKeys.size() == 2) {
+//    std::cout<<"{{Key:"<<mKeys[0]<<","<<mKeys[1]<<"},{Mouse Pos :("<<mMouse.mMousePos.x<<","<<mMouse.mMousePos.y<<"),MouseBut Clked : "<<mMouse.mouseBut<<",Scroll pos : "<<mMouse.MidleButScrollPos<<"}}"<<endl;
+//  }
+//  else if(mKeys.size() == 3) {
+//    std::cout<<"{{Key:"<<mKeys[0]<<","<<mKeys[1]<<","<<mKeys[1]<<"},{Mouse Pos :("<<mMouse.mMousePos.x<<","<<mMouse.mMousePos.y<<"),MouseBut Clked : "<<mMouse.mouseBut<<",Scroll pos : "<<mMouse.MidleButScrollPos<<"}}"<<endl;
+//  }
 }
-
+std::unordered_map<int, bool> keys;
+std::list<int> changedKeys;
 void GetUserInput(sf::RenderWindow &renderWindow,sf::Event event,UserInput &userInput) {
   if (event.type == sf::Event::EventType::Closed)
     renderWindow.close();
 
   if (event.type == sf::Event::EventType::KeyPressed){
-    if (userInput.keys.count(event.key.code) == 0){
-      userInput.keys[event.key.code] = true;
-      userInput.changedKeys.push_back(event.key.code);
+    if (keys.count(event.key.code) == 0){
+      keys[event.key.code] = true;
+      changedKeys.push_back(event.key.code);
     }
   }
   if (event.type == sf::Event::EventType::KeyReleased){
-    if (userInput.keys.count(event.key.code) == 1){
-      userInput.keys.erase(event.key.code);
-      userInput.changedKeys.push_back(event.key.code);
+    if (keys.count(event.key.code) == 1){
+      keys.erase(event.key.code);
+      changedKeys.push_back(event.key.code);
     }
   }
-  userInput.mKeys.clear();
-  for (auto& keyValue : userInput.keys)
-    userInput.mKeys.push_back(keyValue.first);
+  int i = 0;
+  for(int i=0;i<3;i++)
+      userInput.aKeys[i] = -1;
+  for (auto& keyValue : keys)
+    //userInput.mKeys.push_back(keyValue.first);
+      userInput.aKeys[i++] = keyValue.first;
 
   sf::Vector2i localPosition = sf::Mouse::getPosition(renderWindow);
   userInput.mMouse.mouseBut = None;

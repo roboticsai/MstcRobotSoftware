@@ -1,4 +1,4 @@
-#include "robot.h"
+#include "jaguar_s1.h"
 int main(int argc, char *argv[])
 {
     Robot robot(argv[1]);

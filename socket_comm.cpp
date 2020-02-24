@@ -97,25 +97,31 @@ void GetUserInput(sf::RenderWindow &renderWindow,sf::Event event,UserInput &user
   int i = 0;
   for(int i=0;i<3;i++)
       userInput.aKeys[i] = -1;
-  for (auto& keyValue : keys)
-    //userInput.mKeys.push_back(keyValue.first);
+  for (auto& keyValue : keys) {
+      userInput.mHasData = true;
       userInput.aKeys[i++] = keyValue.first;
+  }
 
   sf::Vector2i localPosition = sf::Mouse::getPosition(renderWindow);
   userInput.mMouse.mouseBut = None;
   if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+      userInput.mHasData = true;
     userInput.mMouse.mouseBut = LeftBut;
   }
   else if(sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
+      userInput.mHasData = true;
     userInput.mMouse.mouseBut = RightBut;
   }
   else if(sf::Mouse::isButtonPressed(sf::Mouse::Middle)) {
+      userInput.mHasData = true;
     userInput.mMouse.mouseBut = MidBut;
   }
   else if(event.type == sf::Event::MouseWheelScrolled) {
+      userInput.mHasData = true;
     userInput.mMouse.MidleButScrollPos+=event.mouseWheelScroll.delta;
   }
   if(event.type == sf::Event::MouseMoved) {
+      userInput.mHasData = true;
     userInput.mMouse.mMousePos = {localPosition.x,localPosition.y};
   }
 }

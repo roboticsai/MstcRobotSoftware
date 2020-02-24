@@ -102,6 +102,7 @@ public:
     ~UserInput() {};
     int aKeys[3];
     Mouse mMouse;
+    bool mHasData = false;
     void DisPlayValues();
 };
 

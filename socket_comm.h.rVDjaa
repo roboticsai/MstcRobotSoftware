@@ -74,9 +74,9 @@ class UserInput {
 public:
     UserInput();
     ~UserInput() {};
+    bool HasValue;
     int aKeys[3];
     Mouse mMouse;
-    bool mHasData = false;
     void DisPlayValues();
 };
 

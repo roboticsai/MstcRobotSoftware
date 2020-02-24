@@ -1,6 +1,6 @@
 #include "socket_comm.h"
 
-int main(int argc, char *argv[])
+int main()
 {
   Controller controller;
   UserInput user_input;

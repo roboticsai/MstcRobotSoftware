@@ -41,6 +41,9 @@
 #include <boost/interprocess/mapped_region.hpp>
 #include <boost/serialization/vector.hpp>
 
+#define FRAME_WIDTH         640
+#define FRAME_HEIGHT        480
+
 using namespace boost::interprocess;
 using namespace boost::archive;
 using namespace std;
@@ -57,27 +60,12 @@ enum MouseBut {
 struct Pos {
   int x = -1;
   int y = -1;
-  friend class boost::serialization::access;
-  template<class Archive>
-  void serialize(Archive & ar, const unsigned int version)
-  {
-      ar & x;
-      ar & y;
-  }
 };
 
 struct Mouse {
     Pos mMousePos;
     MouseBut mouseBut;
     double MidleButScrollPos = 0.0;
-    friend class boost::serialization::access;
-    template<class Archive>
-    void serialize(Archive & ar, const unsigned int version)
-    {
-        ar & mMousePos;
-        ar & mouseBut;
-        ar & MidleButScrollPos;
-    }
 };
 
 extern std::unordered_map<int, bool> keys;
@@ -89,12 +77,6 @@ public:
     int aKeys[3];
     Mouse mMouse;
     void DisPlayValues();
-//    friend class boost::serialization::access;
-//    template<class Archive>
-//    void serialize(Archive & ar, const unsigned int version)
-//    {
-//        ar & mMouse;
-//    }
 };
 
 void GetUserInput(sf::RenderWindow &renderWindow,sf::Event event,UserInput &userInput);
@@ -105,28 +87,21 @@ public:
   void Display() {
     std::cout<<x<<std::endl;
   }
-  friend class boost::serialization::access;
-  template<class Archive>
-  void serialize(Archive & ar, const unsigned int version)
-  {
-      ar & x;
-  }
 };
 
 class SfImg {
 public:
-    SfImg(int sockfd_) {
-        sockfd = sockfd_;
+    SfImg(int _newsockfd) {
+        newsockfd = _newsockfd;
     }
     ~SfImg() {}
-    int sockfd;
-    sf::Sprite sprite;
-    cv::Mat img; int imgSize, bytes = 0, FRAME_HEIGHT=460, FRAME_WIDTH=640;
-    sf::Image image;
-    sf::Texture texture;
-    void ReadOcvImg();
+    int imgSize, bytes = 0, newsockfd;
+     Mat img;
+     sf::Image image;
+     sf::Texture texture;
+     sf::Sprite sprite;
+     sf::Sprite GetSfImg();
 };
-
 
 void error(const char *msg);
 
@@ -153,3 +128,5 @@ void ReadRobotInfo(int sockfd,RobotData &data);
 void SendRobotInfo(int sockfd,RobotData &data);
 
 void ReadUserInput(int sockfd,UserInput &data);
+
+sf::Sprite GetSfImg(int newsockfd);

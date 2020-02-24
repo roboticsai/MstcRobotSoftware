@@ -11,16 +11,8 @@ int main(int argc, char *argv[])
     cv::Mat img;
     while (true){
       cap >> img;
-      if ( img.empty() )
-      {
-           cout << "Error loading the image" << endl;
-           return -1;
-      }
 
-      auto imgSize=img.total()*img.elemSize();
-
-      auto n = send(robot.sockfd, img.data, imgSize, 0);
-      if (n < 0) error("ERROR writing img to socket");
+      SendOcvImg(robot.sockfd,img);
 
       ReadUserInput(robot.sockfd,user_input);
       SendRobotInfo(robot.sockfd,robot_data);

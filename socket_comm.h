@@ -1,18 +1,5 @@
 /* A simple server in the internet domain using TCP
    The port number is passed as an argument */
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <iostream>
-#include <netdb.h>
-
-#define PORT_NUM 2324
-
 #include <iostream>
 #include <unordered_map>
 #include <iostream>
@@ -43,6 +30,7 @@
 
 #define FRAME_WIDTH         640
 #define FRAME_HEIGHT        480
+#define PORT_NUM 2324
 
 using namespace boost::interprocess;
 using namespace boost::archive;

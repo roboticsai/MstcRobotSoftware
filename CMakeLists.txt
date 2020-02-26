@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.2)
 project(socket_comm_rem)
 
 find_package(OpenCV REQUIRED)
-set(CMAKE_PREFIX_PATH /home/linux/SFML-2.5.1/lib/cmake/SFML)
+set(CMAKE_PREFIX_PATH /home/dinesh/SFML-2.5.1/lib/cmake/SFML)
 find_package(SFML 2.5 COMPONENTS graphics system window)
 find_package(Boost COMPONENTS iostreams serialization REQUIRED)
 
@@ -28,3 +28,6 @@ target_link_libraries(jaguar_s1_controller socket_comm)
 
 add_executable(user_input user_input.cpp)
 target_link_libraries(user_input socket_comm)
+
+add_executable(tests VoIP.cpp Client.cpp Server.cpp)
+target_link_libraries(tests sfm-audio sfm-network)

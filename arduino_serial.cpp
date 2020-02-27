@@ -16,6 +16,8 @@ void reading(int fd)
     ret=read(fd,&red,4);
     //printf("\nReading data.... >>>>>%s<< \n",red);
     std::cout<<"data="<<red<<std::endl;
+    for(int i=0;i<4;i++)
+       std::cout<<"valu="<<red[i]<<std::endl;
     sleep(1);
   }
 }

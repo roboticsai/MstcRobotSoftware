@@ -31,3 +31,6 @@ target_link_libraries(user_input socket_comm)
 
 add_executable(tests VoIP.cpp Client.cpp Server.cpp)
 target_link_libraries(tests sfml-audio sfml-network)
+
+add_executable(arduino_serial arduino_serial.cpp)
+

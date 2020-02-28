@@ -5,7 +5,8 @@
 #include <errno.h>   /* Error number definitions */
 #include <termios.h> /* POSIX terminal control definitions */
 #include <iostream>
-
+#include <chrono>
+#include <thread>
 enum Key {
   null = -1, eforward = 0, ebackward=115, eleft=97, eright=100, inc_speed=101, dec_speed=113
 };
@@ -65,24 +66,28 @@ public:
       }
   };
   ~SerialComm() {};
-  void Write(const char *data,std::size_t size) {
-    int i,ret,flag;
-    ret=i=flag=0;
-    printf("\nfunction name is  %s >>\n",__func__);
-    ret=write(fd,data,size);
+  void Write(const char data,std::size_t size) {
+    ret=write(fd,&data,size);
   }
 };
 
-int main()
+int main(int argv,char *argc[])
 {
+  std::size_t del_time = 1000;
+  if(argv==1) {
+    std::cout<<"Enter delay time in micro seconds(1/1000000)sec"<<std::endl;
+  }
+  del_time = atoi(argc[1]);
   SerialComm serial_comm;
   UserInput user_input;
   std::string data = user_input.ToString();
   while(true) {
     std::cout<<"data="<<data<<std::endl;
     std::cout<<"size of data="<<sizeof (data)<<std::endl;
-    serial_comm.Write(data.c_str(),sizeof (data));
-    sleep(1);
+    for(int i=0;i<data.length();i++) {
+      serial_comm.Write(data[i],1);
+    }
+    std::this_thread::sleep_for (std::chrono::microseconds (del_time));
   }
   return 0;
 }

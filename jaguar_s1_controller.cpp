@@ -1,8 +1,12 @@
 #include "socket_comm.h"
 
-int main()
+int main(int argv,char *argc[])
 {
-  Controller controller;
+  if(argv<2) {
+    std::cout<<"Enter port number"<<std::endl;
+    return 0;
+  }
+  Controller controller(atoi(argc[1]));
   UserInput user_input;
   RobotData robot_data;
   SfImg sfImg(controller.newsockfd);

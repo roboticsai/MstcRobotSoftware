@@ -30,7 +30,6 @@
 
 #define FRAME_WIDTH         640
 #define FRAME_HEIGHT        480
-#define PORT_NUM 2324
 
 using namespace boost::interprocess;
 using namespace boost::archive;
@@ -105,7 +104,7 @@ public:
       perror(msg);
       exit(1);
   }
-  Controller();
+  Controller(int portNo);
   ~Controller();
  };
 

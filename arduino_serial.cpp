@@ -7,17 +7,20 @@
 #include <iostream>
 #include <chrono>
 #include <thread>
+#include <sstream>
+#include <iomanip>
+
 enum Key {
   null = -1, eforward = 0, ebackward=115, eleft=97, eright=100, inc_speed=101, dec_speed=113
 };
 
 enum MouseBut {
-    None, RightBut, LeftBut, MidBut, MidButScroll
+    None = -1, RightBut = 0, LeftBut = 1, MidBut = 2, MidButScroll = 3
 };
 
 struct Pos {
-  int x = -1;
-  int y = -1;
+  int x = 1;
+  int y = 1;
 };
 
 struct Mouse {
@@ -25,6 +28,12 @@ struct Mouse {
     MouseBut mouseBut;
     int MidleButScrollPos = 0;
 };
+
+std::string to_format(const int number) {
+    std::stringstream ss;
+    ss << std::setw(2) << std::setfill('0') << number;
+    return ss.str();
+}
 
 class UserInput {
 public:
@@ -35,14 +44,14 @@ public:
     bool mHasData = false;
     void DisPlayValues();
     std::string ToString() {
-      return std::to_string(aKeys[0])+std::to_string(aKeys[1])+std::to_string(aKeys[2])
-          +std::to_string(mMouse.mouseBut)+std::to_string(mMouse.mMousePos.x)+std::to_string(mMouse.mMousePos.y)+"\n";
+      return to_format(aKeys[0])+to_format(aKeys[1])+to_format(aKeys[2])
+          +to_format(mMouse.mouseBut)+to_format(mMouse.mMousePos.x)+to_format(mMouse.mMousePos.y)+"\n";
     }
 };
 
 UserInput::UserInput() {
     for(auto i=0;i<3;i++)
-        aKeys[i] = -1;
+        aKeys[i] = 0;
 }
 
 class SerialComm {
@@ -66,8 +75,11 @@ public:
       }
   };
   ~SerialComm() {};
-  void Write(const char data,std::size_t size) {
-    ret=write(fd,&data,size);
+  void Write(std::string data,std::size_t del_time) {
+    for(int i=0;i<data.length();i++) {
+        ret=write(fd,&data[i],1);
+    }
+    std::this_thread::sleep_for (std::chrono::microseconds (del_time));
   }
 };
 
@@ -80,14 +92,8 @@ int main(int argv,char *argc[])
   del_time = atoi(argc[1]);
   SerialComm serial_comm;
   UserInput user_input;
-  std::string data = user_input.ToString();
   while(true) {
-    std::cout<<"data="<<data<<std::endl;
-    std::cout<<"size of data="<<sizeof (data)<<std::endl;
-    for(int i=0;i<data.length();i++) {
-      serial_comm.Write(data[i],1);
-    }
-    std::this_thread::sleep_for (std::chrono::microseconds (del_time));
+    serial_comm.Write(user_input.ToString(),del_time);
   }
   return 0;
 }

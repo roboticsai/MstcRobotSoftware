@@ -5,13 +5,14 @@ void error(const char *msg)
     exit(1);
 }
 
-Controller::Controller() {
+Controller::Controller(int portNo) {
   sockfd = socket(AF_INET, SOCK_STREAM, 0);
   if (sockfd < 0)
      error("ERROR opening socket");
-  serv_addr.sin_addr.s_addr = inet_addr("10.42.0.1");
+  bzero((char *) &serv_addr, sizeof(serv_addr));
   serv_addr.sin_family = AF_INET;
-  serv_addr.sin_port = htons(PORT_NUM);
+  serv_addr.sin_addr.s_addr = INADDR_ANY;
+  serv_addr.sin_port = htons(portNo);
   if (bind(sockfd, (struct sockaddr *) &serv_addr,
            sizeof(serv_addr)) < 0)
            error("ERROR on binding");
@@ -24,6 +25,7 @@ Controller::Controller() {
        error("ERROR on accept");
 
   printf("server: got connection from %s port %d\n", inet_ntoa(cli_addr.sin_addr), ntohs(cli_addr.sin_port));
+
 }
 
 Controller::~Controller() {

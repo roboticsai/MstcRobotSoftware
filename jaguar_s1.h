@@ -11,8 +11,6 @@
 #include <iostream>
 #include <netdb.h>
 
-#define PORT_NUM 2324
-
 #include <iostream>
 #include <unordered_map>
 #include <iostream>
@@ -26,6 +24,18 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
+
+#include <stdio.h>   /* Standard input/output definitions */
+#include <string.h>  /* String function definitions */
+#include <unistd.h>  /* UNIX standard function definitions */
+#include <fcntl.h>   /* File control definitions */
+#include <errno.h>   /* Error number definitions */
+#include <termios.h> /* POSIX terminal control definitions */
+#include <iostream>
+#include <chrono>
+#include <thread>
+#include <sstream>
+#include <iomanip>
 
 #include "opencv2/core/core.hpp"
 #include <opencv2/highgui/highgui.hpp>
@@ -54,7 +64,7 @@ public:
   int sockfd;
   struct sockaddr_in serv_addr;
   struct hostent *server;
-  Robot(const char *server_name) {
+  Robot(int portNo,const char *server_name) {
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if (sockfd < 0)
         error("ERROR opening socket");
@@ -68,9 +78,10 @@ public:
     bcopy((char *)server->h_addr,
          (char *)&serv_addr.sin_addr.s_addr,
          server->h_length);
-    serv_addr.sin_port = htons(PORT_NUM);
+    serv_addr.sin_port = htons(portNo);
     if (connect(sockfd,(struct sockaddr *) &serv_addr,sizeof(serv_addr)) < 0)
         error("ERROR connecting");
+
   }
   ~Robot() {
     close(sockfd);
@@ -96,6 +107,12 @@ struct Mouse {
     double MidleButScrollPos = 0.0;
 };
 
+std::string to_format(const int number) {
+    std::stringstream ss;
+    ss << std::setw(2) << std::setfill('0') << number;
+    return ss.str();
+}
+
 class UserInput {
 public:
     UserInput();
@@ -104,6 +121,10 @@ public:
     Mouse mMouse;
     bool mHasData = false;
     void DisPlayValues();
+    std::string ToString() {
+      return to_format(aKeys[0])+to_format(aKeys[1])+to_format(aKeys[2])
+          +to_format(mMouse.mouseBut)+to_format(mMouse.mMousePos.x)+to_format(mMouse.mMousePos.y)+"\n";
+    }
 };
 
 UserInput::UserInput() {
@@ -160,3 +181,33 @@ void SendOcvImg(int sockfd,cv::Mat img) {
     auto n = send(sockfd, img.data, imgSize, 0);
     if (n < 0) error("ERROR writing img to socket");
 }
+
+class SerialComm {
+public:
+  int fd,ret;
+  char red[88];
+  SerialComm() {
+    fd = open("/dev/ttyUSB0", O_RDWR | O_NOCTTY | O_NDELAY);
+    struct termios SerialPortSettings;  // Create the structure
+    tcgetattr(fd, &SerialPortSettings);
+    cfsetispeed(&SerialPortSettings,B2000000); // Set Read  Speed as 115200
+    cfsetospeed(&SerialPortSettings,B2000000);
+    if((tcsetattr(fd,TCSANOW,&SerialPortSettings)) != 0) // Set the attributes to the termios structure
+      printf("Error while setting attributes \n");
+      printf("\nfunction name is  %s >>\n",__func__);
+      printf("reading from Serial port== %c >>\n",red);
+      printf("returned fd is :%d\n",fd );
+      if (fd == -1)
+      {
+        perror("open_port: Unable to open /dev/ttyUSB0 - ");
+      }
+  };
+  ~SerialComm() {};
+  void Write(std::string data,std::size_t del_time) {
+    std::cout<<"sending data serial="<<data<<std::endl;
+    for(int i=0;i<data.length();i++) {
+        ret=write(fd,&data[i],1);
+    }
+    std::this_thread::sleep_for (std::chrono::microseconds (del_time));
+  }
+};

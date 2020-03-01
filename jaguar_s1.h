@@ -104,12 +104,11 @@ struct Pos {
 struct Mouse {
     Pos mMousePos;
     MouseBut mouseBut;
-    double MidleButScrollPos = 0.0;
 };
 
-std::string to_format(const int number) {
+std::string to_format(const int number,int decPlace) {
     std::stringstream ss;
-    ss << std::setw(2) << std::setfill('0') << number;
+    ss << std::setw(decPlace) << std::setfill('0') << number;
     return ss.str();
 }
 
@@ -122,8 +121,8 @@ public:
     bool mHasData = false;
     void DisPlayValues();
     std::string ToString() {
-      return to_format(aKeys[0])+to_format(aKeys[1])+to_format(aKeys[2])
-          +to_format(mMouse.mouseBut)+to_format(mMouse.mMousePos.x)+to_format(mMouse.mMousePos.y)+"\n";
+      return to_format(aKeys[0],2)+to_format(aKeys[1],2)+to_format(aKeys[2],2)
+          +std::to_string(mMouse.mouseBut)+to_format(mMouse.mMousePos.x,3)+to_format(mMouse.mMousePos.y,3)+"\n";
     }
 };
 
@@ -138,7 +137,7 @@ public:
 };
 
 void UserInput::DisPlayValues() {
-    std::cout<<"{{Key:"<<aKeys[0]<<"\t"<<aKeys[1]<<"\t"<<aKeys[2]<<"},{Mouse Pos :("<<mMouse.mMousePos.x<<","<<mMouse.mMousePos.y<<"),MouseBut Clked : "<<mMouse.mouseBut<<",Scroll pos : "<<mMouse.MidleButScrollPos<<"}}"<<std::endl;
+    std::cout<<"{{Key:"<<aKeys[0]<<"\t"<<aKeys[1]<<"\t"<<aKeys[2]<<"},{Mouse Pos :("<<mMouse.mMousePos.x<<","<<mMouse.mMousePos.y<<"),MouseBut Clked : "<<mMouse.mouseBut<<",Scroll pos : }}"<<std::endl;
 //  else if(mKeys.size() == 1) {
 //    std::cout<<"{{Key:"<<mKeys[0]<<"},{Mouse Pos :("<<mMouse.mMousePos.x<<","<<mMouse.mMousePos.y<<"),MouseBut Clked : "<<mMouse.mouseBut<<",Scroll pos : "<<mMouse.MidleButScrollPos<<"}}"<<endl;
 //  }

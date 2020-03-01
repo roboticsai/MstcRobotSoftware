@@ -52,7 +52,6 @@ struct Pos {
 struct Mouse {
     Pos mMousePos;
     MouseBut mouseBut;
-    double MidleButScrollPos = 0.0;
 };
 
 extern std::unordered_map<int, bool> keys;
@@ -79,15 +78,15 @@ public:
 
 class SfImg {
 public:
-    SfImg(int _newsockfd) {
-        newsockfd = _newsockfd;
-    }
-    ~SfImg() {}
     int imgSize, bytes = 0, newsockfd;
      Mat img;
      sf::Image image;
      sf::Texture texture;
      sf::Sprite sprite;
+    SfImg(int _newsockfd) {
+      newsockfd = _newsockfd;
+    }
+    ~SfImg() {}
      sf::Sprite GetSfImg();
 };
 

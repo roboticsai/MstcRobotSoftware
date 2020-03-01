@@ -66,7 +66,7 @@ UserInput::UserInput() {
 }
 
 void UserInput::DisPlayValues() {
-      std::cout<<"{{Key:"<<aKeys[0]<<"\t"<<aKeys[1]<<"\t"<<aKeys[2]<<"},{Mouse Pos :("<<mMouse.mMousePos.x<<","<<mMouse.mMousePos.y<<"),MouseBut Clked : "<<mMouse.mouseBut<<",Scroll pos : "<<mMouse.MidleButScrollPos<<"}}"<<std::endl;
+      std::cout<<"{{Key:"<<aKeys[0]<<"\t"<<aKeys[1]<<"\t"<<aKeys[2]<<"},{Mouse Pos :("<<mMouse.mMousePos.x<<","<<mMouse.mMousePos.y<<"),MouseBut Clked : "<<mMouse.mouseBut<<",Scroll pos : }}"<<std::endl;
 //  else if(mKeys.size() == 1) {
 //    std::cout<<"{{Key:"<<mKeys[0]<<"},{Mouse Pos :("<<mMouse.mMousePos.x<<","<<mMouse.mMousePos.y<<"),MouseBut Clked : "<<mMouse.mouseBut<<",Scroll pos : "<<mMouse.MidleButScrollPos<<"}}"<<endl;
 //  }
@@ -117,10 +117,10 @@ void GetUserInput(sf::RenderWindow &renderWindow,sf::Event event,UserInput &user
       userInput.mHasData = true;
     userInput.mMouse.mouseBut = MidBut;
   }
-  else if(event.type == sf::Event::MouseWheelScrolled) {
-      userInput.mHasData = true;
-    userInput.mMouse.MidleButScrollPos+=event.mouseWheelScroll.delta;
-  }
+//  else if(event.type == sf::Event::MouseWheelScrolled) {
+//      userInput.mHasData = true;
+//    userInput.mMouse.MidleButScrollPos+=event.mouseWheelScroll.delta;
+//  }
   if(event.type == sf::Event::MouseMoved) {
       userInput.mHasData = true;
     userInput.mMouse.mMousePos = {localPosition.x,localPosition.y};
@@ -128,9 +128,8 @@ void GetUserInput(sf::RenderWindow &renderWindow,sf::Event event,UserInput &user
 }
 
 sf::Sprite SfImg::GetSfImg() {
-             img = Mat::zeros(FRAME_HEIGHT, FRAME_WIDTH, CV_8UC3);
-
-             imgSize = img.total()*img.elemSize();
+  img = Mat::zeros(FRAME_HEIGHT, FRAME_WIDTH, CV_8UC3);
+  imgSize = img.total()*img.elemSize();
              uchar sockData[imgSize];
 
              for(int i=0;i<imgSize;i+=bytes)
@@ -138,12 +137,14 @@ sf::Sprite SfImg::GetSfImg() {
 
              int ptr=0;
 
-             for(int i=0;i<img.rows;++i)
+             for(int i=0;i<img.rows;++i) {
                for(int j=0;j<img.cols;++j)
                {
                  img.at<Vec3b>(i,j) = Vec3b(sockData[ptr+0],sockData[ptr+1],sockData[ptr+2]);
                  ptr=ptr+3;
                }
+             }
+
              cv::cvtColor(img, img, cv::COLOR_BGR2RGBA);
 
              image.create(img.cols, img.rows, img.ptr());

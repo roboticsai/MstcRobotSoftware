@@ -41,7 +41,7 @@ enum Key {
 };
 
 enum MouseBut {
-    None, RightBut, LeftBut, MidBut, MidButScroll
+    None = -1, RightBut, LeftBut, MidBut, MidButScroll
 };
 
 struct Pos {
@@ -51,7 +51,7 @@ struct Pos {
 
 struct Mouse {
     Pos mMousePos;
-    MouseBut mouseBut;
+    MouseBut mouseBut = None;
 };
 
 extern std::unordered_map<int, bool> keys;

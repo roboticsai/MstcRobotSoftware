@@ -93,7 +93,7 @@ enum Key {
 };
 
 enum MouseBut {
-    None, RightBut, LeftBut, MidBut, MidButScroll
+    None = -1, RightBut, LeftBut, MidBut, MidButScroll
 };
 
 struct Pos {
@@ -103,7 +103,7 @@ struct Pos {
 
 struct Mouse {
     Pos mMousePos;
-    MouseBut mouseBut;
+    MouseBut mouseBut = None;
 };
 
 std::string to_format(const int number,int decPlace) {
@@ -122,7 +122,7 @@ public:
     void DisPlayValues();
     std::string ToString() {
       return to_format(aKeys[0],2)+to_format(aKeys[1],2)+to_format(aKeys[2],2)
-          +std::to_string(mMouse.mouseBut)+to_format(mMouse.mMousePos.x,3)+to_format(mMouse.mMousePos.y,3)+"\n";
+          +std::to_string(mMouse.mouseBut)+to_format(mMouse.mMousePos.x,4)+to_format(mMouse.mMousePos.y,4)+"\n";
     }
 };
 

@@ -189,8 +189,8 @@ public:
     fd = open("/dev/ttyUSB0", O_RDWR | O_NOCTTY | O_NDELAY);
     struct termios SerialPortSettings;  // Create the structure
     tcgetattr(fd, &SerialPortSettings);
-    cfsetispeed(&SerialPortSettings,B2000000); // Set Read  Speed as 115200
-    cfsetospeed(&SerialPortSettings,B2000000);
+    cfsetispeed(&SerialPortSettings,B115200); // Set Read  Speed as 115200
+    cfsetospeed(&SerialPortSettings,B115200);
     if((tcsetattr(fd,TCSANOW,&SerialPortSettings)) != 0) // Set the attributes to the termios structure
       printf("Error while setting attributes \n");
       printf("\nfunction name is  %s >>\n",__func__);
@@ -203,7 +203,7 @@ public:
   };
   ~SerialComm() {};
   void Write(std::string data,std::size_t del_time) {
-    std::cout<<"sending data serial="<<data<<std::endl;
+    //std::cout<<"sending data serial="<<data<<std::endl;
     for(int i=0;i<data.length();i++) {
         ret=write(fd,&data[i],1);
     }

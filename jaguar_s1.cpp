@@ -21,7 +21,7 @@ int main(int argv, char *argc[])
 
       ReadUserInput(robot.sockfd,user_input);
       SendRobotInfo(robot.sockfd,robot_data);
-      user_input.DisPlayValues();
+      //user_input.DisPlayValues();
       serial_comm.Write(user_input.ToString(),10000);
     }
     return 0;

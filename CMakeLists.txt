@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.2)
 project(socket_comm_rem)
 
 find_package(OpenCV REQUIRED)
-set(CMAKE_PREFIX_PATH /home/dinesh/SFML-2.5.1/lib/cmake/SFML)
+set(CMAKE_PREFIX_PATH /home/linux/SFML-2.5.1/lib/cmake/SFML)
 find_package(SFML 2.5 COMPONENTS audio network graphics system window)
 find_package(Boost COMPONENTS iostreams serialization REQUIRED)
 

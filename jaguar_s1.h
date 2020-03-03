@@ -122,7 +122,7 @@ public:
     void DisPlayValues();
     std::string ToString() {
       return to_format(aKeys[0],2)+to_format(aKeys[1],2)+to_format(aKeys[2],2)
-          +std::to_string(mMouse.mouseBut)+to_format(mMouse.mMousePos.x,4)+to_format(mMouse.mMousePos.y,4)+"\n";
+          +to_format(mMouse.mouseBut,2)+to_format(mMouse.mMousePos.x,3)+to_format(mMouse.mMousePos.y,3)+"\n";
     }
 };
 
@@ -203,7 +203,7 @@ public:
   };
   ~SerialComm() {};
   void Write(std::string data,std::size_t del_time) {
-    //std::cout<<"sending data serial="<<data<<std::endl;
+    std::cout<<"sending data serial="<<data<<std::endl;
     for(int i=0;i<data.length();i++) {
         ret=write(fd,&data[i],1);
     }

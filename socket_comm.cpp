@@ -122,7 +122,7 @@ void GetUserInput(sf::RenderWindow &renderWindow,sf::Event event,UserInput &user
 //    userInput.mMouse.MidleButScrollPos+=event.mouseWheelScroll.delta;
 //  }
   if(event.type == sf::Event::MouseMoved) {
-    userInput.mMouse.mMousePos = {(localPosition.x-320)*10,(localPosition.y-230)*10};
+    userInput.mMouse.mMousePos = {localPosition.x,localPosition.y};
   }
 }
 

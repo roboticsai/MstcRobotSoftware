@@ -107,7 +107,7 @@ private:
 /// start sending him audio data
 ///
 ////////////////////////////////////////////////////////////
-void doClient(unsigned short port)
+void doClient(unsigned short port,char *serverName)
 {
     // Check that the device can capture audio
     if (!sf::SoundRecorder::isAvailable())
@@ -117,24 +117,13 @@ void doClient(unsigned short port)
     }
 
     // Ask for server address
-    sf::IpAddress server;
-    do
-    {
-        std::cout << "Type address or name of the server to connect to: ";
-        std::cin  >> server;
-    }
-    while (server == sf::IpAddress::None);
+    sf::IpAddress server = serverName;
 
     // Create an instance of our custom recorder
     NetworkRecorder recorder(server, port);
 
-    // Wait for user input...
-    std::cin.ignore(10000, '\n');
-    std::cout << "Press enter to start recording audio";
-    std::cin.ignore(10000, '\n');
-
     // Start capturing audio data
-    recorder.start(44100);
+    recorder.start(4410);
     std::cout << "Recording... press enter to stop";
     std::cin.ignore(10000, '\n');
     recorder.stop();

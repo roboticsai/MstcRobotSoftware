@@ -30,7 +30,7 @@ public:
     m_hasFinished(false)
     {
         // Set the sound parameters
-        initialize(1, 44100);
+        initialize(1, 4410);
     }
 
     ////////////////////////////////////////////////////////////

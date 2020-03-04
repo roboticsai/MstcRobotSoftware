@@ -29,8 +29,11 @@ target_link_libraries(jaguar_s1_controller socket_comm)
 add_executable(user_input user_input.cpp)
 target_link_libraries(user_input socket_comm)
 
-add_executable(tests VoIP.cpp Client.cpp Server.cpp)
-target_link_libraries(tests sfml-audio sfml-network)
+add_executable(server server.cpp Server.cpp)
+target_link_libraries(server sfml-audio sfml-network)
+
+add_executable(client client.cpp Client.cpp)
+target_link_libraries(client sfml-audio sfml-network)
 
 add_executable(arduino_serial arduino_serial.cpp)
 

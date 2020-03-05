@@ -24,13 +24,7 @@ void doServer(unsigned short port);
 int main()
 {
     // Choose a random port for opening sockets (ports < 1024 are reserved)
-    const unsigned short port = 2435;
-
-    doServer(port);
-
-    // Wait until the user presses 'enter' key
-    std::cout << "Press enter to exit..." << std::endl;
-    std::cin.ignore(10000, '\n');
+    doServer(2435);
 
     return EXIT_SUCCESS;
 }
